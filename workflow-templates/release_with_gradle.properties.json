@@ -1,0 +1,12 @@
+{
+    "name": "Release With Gradle Workflow",
+    "description": "CI workflow template for releasing artifacts built with Gradle.",
+    "iconName": "example-icon",
+    "categories": [
+        "Gradle",
+        "Java"
+    ],
+    "filePatterns": [
+        "build.gradle$"
+    ]
+}
