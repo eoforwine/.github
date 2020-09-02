@@ -1,0 +1,46 @@
+name: Release With Gradle
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Release Build Artifact
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Get Release Tag
+      id: previoustag
+      uses: "WyriHaximus/github-action-get-previous-tag@master"
+
+    - name: Set Artifact Version
+      run: |
+        echo Artifact version: ${{ steps.previoustag.outputs.tag }}
+        echo "version=${{ steps.previoustag.outputs.tag }}" > gradle.properties
+
+    - name: Install Java
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - name: Build Artifact
+      uses: eskatos/gradle-command-action@v1
+      with:
+        gradle-version: 6.6.1
+        arguments: build
+        wrapper-cache-enabled: false
+        dependencies-cache-enabled: false
+        configuration-cache-enabled: false
+
+    - name: Publish Artifact
+      uses: eskatos/gradle-command-action@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        gradle-version: 6.6.1
+        arguments: publish
+        wrapper-cache-enabled: false
+        dependencies-cache-enabled: false
+        configuration-cache-enabled: false
